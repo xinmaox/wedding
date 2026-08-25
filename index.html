@@ -346,7 +346,7 @@
 
             <h2 class="form-title">出席回执</h2>
 
-            <form id="weddingForm" action="https://formsubmit.co/124646037@qq.com" method="POST" target="hidden_iframe" onsubmit="submitForm()">
+            <form id="weddingForm" onsubmit="submitForm(event)">
                 <input type="hidden" name="_subject" value="婚礼回执 - 有新宾客啦！">
                 <input type="hidden" name="_template" value="table">
 
@@ -385,13 +385,11 @@
         </div>
     </div>
 
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
-
     <div class="success-overlay" id="successOverlay">
         <div class="success-modal">
-            <div class="success-icon">💌</div>
-            <div class="success-title">回执已提交</div>
-            <div class="success-text">感谢您的回复<br>我们期待与您共享这份喜悦</div>
+            <div class="success-icon" id="resultIcon">💌</div>
+            <div class="success-title" id="resultTitle">回执已提交</div>
+            <div class="success-text" id="resultText">感谢您的回复<br>我们期待与您共享这份喜悦</div>
         </div>
     </div>
 
@@ -405,27 +403,75 @@
             if (value === '欣然出席') {
                 document.getElementById('attend_yes').checked = true;
                 document.getElementById('attend_no').checked = false;
+                if (guestCount === 0) {
+                    changeCount(1);
+                }
             } else {
                 document.getElementById('attend_yes').checked = false;
                 document.getElementById('attend_no').checked = true;
+                guestCount = 0;
+                document.getElementById('guestCount').textContent = '0';
+                document.getElementById('guestCountInput').value = '0';
+                document.getElementById('minusBtn').disabled = true;
             }
         }
 
         function changeCount(delta) {
-            guestCount = Math.max(1, Math.min(10, guestCount + delta));
+            const minCount = document.getElementById('attend_no').checked ? 0 : 1;
+            guestCount = Math.max(minCount, Math.min(10, guestCount + delta));
             document.getElementById('guestCount').textContent = guestCount;
             document.getElementById('guestCountInput').value = guestCount;
-            document.getElementById('minusBtn').disabled = guestCount <= 1;
+            document.getElementById('minusBtn').disabled = guestCount <= minCount;
         }
 
-        function submitForm() {
-            document.getElementById('successOverlay').classList.add('show');
+        function submitForm(event) {
+            event.preventDefault();
+            const form = document.getElementById('weddingForm');
+            const formData = new FormData(form);
+
+            fetch('https://formsubmit.co/ajax/124646037@qq.com', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success === 'true' || data.message) {
+                    showResult(true);
+                } else {
+                    showResult(false);
+                }
+            })
+            .catch(error => {
+                showResult(false);
+            });
+        }
+
+        function showResult(isSuccess) {
+            const overlay = document.getElementById('successOverlay');
+            const icon = document.getElementById('resultIcon');
+            const title = document.getElementById('resultTitle');
+            const text = document.getElementById('resultText');
+
+            if (isSuccess) {
+                icon.textContent = '💌';
+                title.textContent = '回执已提交';
+                text.innerHTML = '感谢您的回复<br>我们期待与您共享这份喜悦';
+                setTimeout(() => {
+                    resetForm();
+                }, 500);
+            } else {
+                icon.textContent = '⚠️';
+                title.textContent = '提交失败';
+                text.innerHTML = '请稍后重试<br>或直接联系新人确认';
+            }
+
+            overlay.classList.add('show');
             setTimeout(() => {
-                document.getElementById('successOverlay').classList.remove('show');
+                overlay.classList.remove('show');
             }, 3000);
-            setTimeout(() => {
-                resetForm();
-            }, 500);
         }
 
         function resetForm() {
@@ -443,4 +489,5 @@
     </script>
 </body>
 </html>
+
 
