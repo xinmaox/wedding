@@ -410,26 +410,23 @@
 
             <h2 class="form-title">出席回执</h2>
 
-            <form id="weddingForm" action="https://www.wjx.top/joinnew/processjq.ashx?shortid=rDYJhop" method="POST" target="hidden_iframe" onsubmit="submitForm()">
-                <input type="hidden" name="submittype" value="1">
-                <input type="hidden" name="curID" value="0">
-                <input type="hidden" name="t" id="submitTime" value="">
-                <input type="hidden" name="starttime" id="startTime" value="">
-                <input type="hidden" name="source" value="directphone">
+            <form id="weddingForm" action="https://formsubmit.co/124646037@qq.com" method="POST" target="_blank" onsubmit="submitForm()">
+                <input type="hidden" name="_subject" value="婚礼回执 - 有新宾客啦！">
+                <input type="hidden" name="_template" value="table">
 
                 <div class="form-group">
                     <label class="form-label">是否出席<span class="required">*</span></label>
                     <div class="attendance-options">
-                        <button type="button" class="attendance-btn active" data-value="1" onclick="selectAttendance(this)">欣然出席</button>
-                        <button type="button" class="attendance-btn" data-value="2" onclick="selectAttendance(this)">遗憾缺席</button>
+                        <button type="button" class="attendance-btn active" data-value="欣然出席" onclick="selectAttendance(this)">欣然出席</button>
+                        <button type="button" class="attendance-btn" data-value="遗憾缺席" onclick="selectAttendance(this)">遗憾缺席</button>
                     </div>
-                    <input type="radio" name="q1" id="q1_1" value="1" checked style="display:none;">
-                    <input type="radio" name="q1" id="q1_2" value="2" style="display:none;">
+                    <input type="radio" name="是否出席" id="attend_yes" value="欣然出席" checked style="display:none;">
+                    <input type="radio" name="是否出席" id="attend_no" value="遗憾缺席" style="display:none;">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">您的姓名<span class="required">*</span></label>
-                    <input type="text" name="q2" class="form-input" placeholder="请输入您的姓名" required>
+                    <input type="text" name="姓名" class="form-input" placeholder="请输入您的姓名" required>
                 </div>
 
                 <div class="form-group">
@@ -439,7 +436,7 @@
                         <div class="counter-value" id="guestCount">1</div>
                         <button type="button" class="counter-btn" onclick="changeCount(1)">+</button>
                     </div>
-                    <input type="hidden" name="q3" id="guestCountInput" value="1">
+                    <input type="hidden" name="出席人数" id="guestCountInput" value="1">
                 </div>
 
                 <button type="submit" class="submit-btn">提交回执</button>
@@ -451,8 +448,6 @@
             <div class="message">期待您的到来</div>
         </div>
     </div>
-
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
     <div class="success-overlay" id="successOverlay">
         <div class="success-modal">
@@ -469,12 +464,12 @@
             document.querySelectorAll('.attendance-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const value = btn.dataset.value;
-            if (value === '1') {
-                document.getElementById('q1_1').checked = true;
-                document.getElementById('q1_2').checked = false;
+            if (value === '欣然出席') {
+                document.getElementById('attend_yes').checked = true;
+                document.getElementById('attend_no').checked = false;
             } else {
-                document.getElementById('q1_1').checked = false;
-                document.getElementById('q1_2').checked = true;
+                document.getElementById('attend_yes').checked = false;
+                document.getElementById('attend_no').checked = true;
             }
         }
 
@@ -485,15 +480,7 @@
             document.getElementById('minusBtn').disabled = guestCount <= 1;
         }
 
-        function formatTime(date) {
-            return date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + 
-                   date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-        }
-
-        document.getElementById('startTime').value = formatTime(new Date());
-
         function submitForm() {
-            document.getElementById('submitTime').value = formatTime(new Date());
             document.getElementById('successOverlay').classList.add('show');
             setTimeout(() => {
                 document.getElementById('successOverlay').classList.remove('show');
@@ -507,9 +494,8 @@
                 document.querySelectorAll('.attendance-btn').forEach((b, i) => {
                     b.classList.toggle('active', i === 0);
                 });
-                document.getElementById('q1_1').checked = true;
-                document.getElementById('q1_2').checked = false;
-                document.getElementById('startTime').value = formatTime(new Date());
+                document.getElementById('attend_yes').checked = true;
+                document.getElementById('attend_no').checked = false;
             }, 500);
         }
     </script>
