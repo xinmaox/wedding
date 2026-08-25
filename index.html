@@ -410,7 +410,7 @@
 
             <h2 class="form-title">出席回执</h2>
 
-            <form id="weddingForm" action="https://www.wjx.top/joinnew/processjq.ashx?shortid=rDYJhop" method="POST">
+            <form id="weddingForm" action="https://www.wjx.top/joinnew/processjq.ashx?shortid=rDYJhop" method="POST" target="hidden_iframe" onsubmit="submitForm()">
                 <input type="hidden" name="submittype" value="1">
                 <input type="hidden" name="curID" value="0">
                 <input type="hidden" name="t" id="submitTime" value="">
@@ -452,6 +452,8 @@
         </div>
     </div>
 
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
     <div class="success-overlay" id="successOverlay">
         <div class="success-modal">
             <div class="success-icon">💌</div>
@@ -490,28 +492,14 @@
 
         document.getElementById('startTime').value = formatTime(new Date());
 
-        document.getElementById('weddingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const form = this;
+        function submitForm() {
             document.getElementById('submitTime').value = formatTime(new Date());
-            
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData).toString();
-            
-            fetch(form.action, {
-                method: 'POST',
-                body: params,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept': 'application/json, text/javascript, */*'
-                }
-            }).then(response => response.text()).then(data => {
-                document.getElementById('successOverlay').classList.add('show');
-                setTimeout(() => {
-                    document.getElementById('successOverlay').classList.remove('show');
-                }, 3000);
-                form.reset();
+            document.getElementById('successOverlay').classList.add('show');
+            setTimeout(() => {
+                document.getElementById('successOverlay').classList.remove('show');
+            }, 3000);
+            setTimeout(() => {
+                document.getElementById('weddingForm').reset();
                 guestCount = 1;
                 document.getElementById('guestCount').textContent = '1';
                 document.getElementById('guestCountInput').value = '1';
@@ -521,23 +509,9 @@
                 });
                 document.getElementById('q1_1').checked = true;
                 document.getElementById('q1_2').checked = false;
-            }).catch(() => {
-                document.getElementById('successOverlay').classList.add('show');
-                setTimeout(() => {
-                    document.getElementById('successOverlay').classList.remove('show');
-                }, 3000);
-                form.reset();
-                guestCount = 1;
-                document.getElementById('guestCount').textContent = '1';
-                document.getElementById('guestCountInput').value = '1';
-                document.getElementById('minusBtn').disabled = false;
-                document.querySelectorAll('.attendance-btn').forEach((b, i) => {
-                    b.classList.toggle('active', i === 0);
-                });
-                document.getElementById('q1_1').checked = true;
-                document.getElementById('q1_2').checked = false;
-            });
-        });
+                document.getElementById('startTime').value = formatTime(new Date());
+            }, 500);
+        }
     </script>
 </body>
 </html>
